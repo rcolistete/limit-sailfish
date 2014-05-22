@@ -1,9 +1,11 @@
 limit-sailfish
 ==============
 
-**Limit** calculates mathematical limits using Python and SymPy.
+[**Limit**](http://www.robertocolistete.net/Limit/) calculates mathematical limits using Python and SymPy.
 
 This is the [Sailfish OS](https://sailfishos.org/) version, using Python 3, [SymPy](http://sympy.org/), [PyOtherSide](http://thp.io/2011/pyotherside/), Qt 5, Qt Quick 2 (with Silica Components).
+
+See [Limit for Sailfish at OpenRepos.net](https://openrepos.net/content/rcolistete/limit-sailfish-os).
 
 Use Sailfish SDK with this source-code to build the application (.rpm installation file).
 
