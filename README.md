@@ -9,8 +9,7 @@ See [Limit for Sailfish at OpenRepos.net](https://openrepos.net/content/rcoliste
 
 Use Sailfish SDK with this source-code to build the application (.rpm installation file).
 
-Before running Limit on Sailfish SDK Emulator, add my repository to install python3-sympy :
-
+Before running Limit on Sailfish SDK Emulator, add my repository to install python3-sympy[python3-sympy](https://build.merproject.org/package/show?package=python3-sympy&project=home%3Arcolistete) dependency :
     $ sudo zypper ar -f http://repo.merproject.org/obs/home:/rcolistete/latest_i486/ rcolistete-mer  
     $ sudo zypper ref  
     $ sudo zypper in python3-sympy  
