@@ -13,10 +13,15 @@ from sympy import __version__
 from sympy.interactive.printing import init_printing
 from sympy.printing.mathml import mathml
 timet2=time.time()
-loadingtimeLimit = timet2-timet1
+loadingtimeSymPy = timet2-timet1
 
 versionPython = python_version()
 versionSymPy = __version__
+
+simplifyType = {'none':0, 'expandterms':1, 'simplifyterms':2, 'expandall':3, \
+                'simplifyall':4}
+outputType = {'simple':0, 'bidimensional':1, 'latex':2, 'c':3, \
+              'fortran':4, 'javascript':5, 'python':6}
 
 nonCalculatedLimit = ""
 nonCalculatedLimitOutput = ""
@@ -24,7 +29,15 @@ resultLimit = ""
 resultLimitSimp = ""
 resultOutput = ""
 timeLimit = 0.0
-limitErrorMessage = "Error: limit not calculated"
+limitErrorMessage = 'Error: limit not calculated'
+
+numerApprox = False
+
+def mapexpr(expr,func):
+    if isinstance(expr,Add):
+        return Add(*map(func,expr.args))
+    else:
+        return func(expr)
 
 def fixUnicodeText(text):
     text = text.replace(u"⎽","_")
@@ -32,10 +45,15 @@ def fixUnicodeText(text):
     text = text.replace(u"ⅈ","i")
     return text
 
-def calculate_Limit(expression,variable,point,direction):
+def calculate_Limit(expression,variable,point,direction,\
+                    flagPortrait,showLimit,showTime,numerApprox,numDigText,\
+                    simplifyResult,outputResult):
     global nonCalculatedLimit, nonCalculatedLimitOutput, resultLimit, resultLimitSimp, resultOutput, timeLimit
 
-    init_printing(use_unicode=True, num_columns=30)
+    if flagPortrait:
+        init_printing(use_unicode=True, num_columns=35)
+    else:
+        init_printing(use_unicode=True, num_columns=60)
     timet1=time.time()
 
     expressionLimit = expression
@@ -49,6 +67,7 @@ def calculate_Limit(expression,variable,point,direction):
         elif direction == 'Right':
             limitExpr += u'+\"'
     limitExpr += u')'
+
     if direction == 'Bilateral':
         try:
             nonCalculatedLimit = sympify(u'Limit'+limitExpr)
@@ -57,7 +76,6 @@ def calculate_Limit(expression,variable,point,direction):
     else:
 # "Limit" has a bug not showing the "+" and "-" above the point value.
         nonCalculatedLimit = u'Limit'+limitExpr
-
     if direction == 'Bilateral':
         try:
             if (sympify(u'limit'+limitExpr)) == (sympify(u'limit'+limitExpr[:-1]+u',dir=\"-\")')):
@@ -71,28 +89,67 @@ def calculate_Limit(expression,variable,point,direction):
             resultLimit = sympify(u'limit'+limitExpr)
         except:
             resultLimit = limitErrorMessage
+    if (type(resultLimit) != str) and numerApprox:
+        try:
+            resultLimit = sympify('N('+str(resultLimit)+','+numDigText+')')
+        except:
+            resultLimit = limitErrorMessage
 
-    resultLimitSimp = resultLimit
+    if (resultLimit) and (type(resultLimit) != str) and (not numerApprox):
+        if simplifyResult == simplifyType['none']:
+            resultLimitSimp = sympify(resultLimit)
+        elif simplifyResult == simplifyType['expandterms']:
+            resultLimitSimp = sympify(mapexpr(resultLimit,expand))
+        elif simplifyResult == simplifyType['simplifyterms']:
+            resultLimitSimp = sympify(mapexpr(resultLimit,simplify))
+        elif simplifyResult == simplifyType['expandall']:
+            resultLimitSimp = sympify(expand(resultLimit))
+        elif simplifyResult == simplifyType['simplifyall']:
+            resultLimitSimp = sympify(simplify(resultLimit))
+    else:
+        resultLimitSimp = resultLimit
 
     timet2=time.time()
     timeLimit = timet2-timet1
 
-    nonCalculatedLimitOutput = nonCalculatedLimit
-    resultOutput = resultLimitSimp
     if direction == 'Bilateral':
         nonCalculatedLimitOutput = fixUnicodeText(printing.pretty(nonCalculatedLimit))
     if (type(resultLimitSimp) != str):
         resultOutput = fixUnicodeText(printing.pretty(resultLimitSimp))
 
-    if (timeLimit > 0.0):
+    nonCalculatedLimitOutput = str(nonCalculatedLimit)
+    resultOutput = str(resultLimitSimp)
+    if outputResult == outputType['bidimensional']:
+        if (direction == 'Bilateral') and (type(nonCalculatedLimit) != str):
+            nonCalculatedLimitOutput = fixUnicodeText(printing.pretty(nonCalculatedLimit))
+        if (type(resultLimitSimp) != str):
+            resultOutput = fixUnicodeText(printing.pretty(resultLimitSimp))
+    elif outputResult == outputType['latex']:
+        if (direction == 'Bilateral') and (type(nonCalculatedLimit) != str):
+            nonCalculatedLimitOutput = latex(nonCalculatedLimit)
+        if (type(resultLimitSimp) != str):
+            resultOutput = latex(resultLimitSimp)
+    elif outputResult == outputType['c']:
+        if (type(resultLimitSimp) != str):
+            resultOutput = ccode(resultLimitSimp)
+    elif outputResult == outputType['fortran']:
+        if (type(resultLimitSimp) != str):
+            resultOutput = fcode(resultLimitSimp)
+    elif outputResult == outputType['javascript']:
+        if (type(resultLimitSimp) != str):
+            resultOutput = jscode(resultLimitSimp)
+    elif outputResult == outputType['python']:
+        if (type(resultLimitSimp) != str):
+            resultOutput = python(resultLimitSimp)
+
+    if showTime and (timeLimit > 0.0):
         result = '<FONT COLOR="LightGreen">'+("Calculated after %f s :" % timeLimit)+'</FONT><br>'
     else:
         result = u""
-    if nonCalculatedLimitOutput:
+    if showLimit and nonCalculatedLimitOutput:
         result += u'<FONT COLOR="LightBlue">'+(nonCalculatedLimitOutput.replace(' ','&nbsp;')).replace("\n","<br>")+'<br>=</FONT><br>'
     if (type(resultLimitSimp) != str):
         result += (resultOutput.replace(' ','&nbsp;')).replace("\n","<br>")
     else:
         result += u'<FONT COLOR="Red">'+((resultOutput.replace(' ','&nbsp;')).replace("\n","<br>"))+'</FONT>'
     return result
-

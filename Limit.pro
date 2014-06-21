@@ -19,7 +19,6 @@ SOURCES += src/Limit.cpp
 OTHER_FILES += qml/Limit.qml \
     qml/cover/CoverPage.qml \
     qml/pages/FirstPage.qml \
-    rpm/Limit.changes.in \
     rpm/Limit.spec \
     rpm/Limit.yaml \
     translations/*.ts \
@@ -27,7 +26,9 @@ OTHER_FILES += qml/Limit.qml \
     qml/pages/HelpPage.qml \
     qml/pages/AboutPage.qml \
     qml/pages/DejaVuSansMono.ttf \
-    qml/pages/limit.py
+    qml/pages/limit.py \
+    rpm/Limit.changes \
+    qml/pages/SettingsPage.qml
 
 # to disable building translations every time, comment out the
 # following CONFIG line

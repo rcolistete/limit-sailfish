@@ -34,6 +34,15 @@ import "pages"
 
 ApplicationWindow
 {
+    property int orientation_index: 2
+    property bool showLimit: true
+    property bool showTime: true
+    property bool numerApprox: false
+    property string numDigText: '15'
+    property int simplifyResult_index: 2
+    property int outputTypeResult_index: 1
+    property int limitScreenOrientation: Orientation.Portrait | Orientation.Landscape
+
     initialPage: Component { FirstPage { } }
     cover: Qt.resolvedUrl("cover/CoverPage.qml")
 }

@@ -6,12 +6,16 @@ import io.thp.pyotherside 1.2
 Page {
     id: page
 
+    allowedOrientations: limitScreenOrientation
+
     // To enable PullDownMenu, place our content in a SilicaFlickable
     SilicaFlickable {
         id: container
         anchors.fill: parent
         contentHeight: contentItem.childrenRect.height
         contentWidth: page.width
+
+        VerticalScrollDecorator { flickable: container }
 
         // PullDownMenu and PushUpMenu must be declared in SilicaFlickable, SilicaListView or SilicaGridView
         PullDownMenu {
@@ -23,11 +27,10 @@ Page {
                 text: "Help"
                 onClicked: pageStack.push(Qt.resolvedUrl("HelpPage.qml"))
             }
-/*            MenuItem {
+            MenuItem {
                 text: "Settings"
                 onClicked: pageStack.push(Qt.resolvedUrl("SettingsPage.qml"))
             }
-*/
         }
 
         // Place our content in a Column.  The PageHeader is always placed at the top
@@ -39,7 +42,7 @@ Page {
 
             function calculateResultLimit() {
                 result_TextArea.text = '<FONT COLOR="LightGreen">Calculating limit...</FONT>'
-                py.call('limit.calculate_Limit', [expression_TextField.text,variable_TextField.text,point_TextField.text,direction_ComboBox.value], function(result) {
+                py.call('limit.calculate_Limit', [expression_TextField.text,variable_TextField.text,point_TextField.text,direction_ComboBox.value,orientation!==Orientation.Landscape,showLimit,showTime,numerApprox,numDigText,simplifyResult_index,outputTypeResult_index], function(result) {
                     result_TextArea.text = result;
                     result_TextArea.selectAll()
                     result_TextArea.copy()
@@ -52,11 +55,11 @@ Page {
             }
             TextField {
                 id: expression_TextField
+                inputMethodHints: Qt.ImhNoAutoUppercase
                 placeholderText: "sin(x)/x"
                 label: qsTr("Limit expression")
                 width: parent.width
                 text : "sin(x)/x"
-                focus: true
                 EnterKey.enabled: text.length > 0
                 EnterKey.iconSource: "image://theme/icon-m-enter-next"
                 EnterKey.onClicked: variable_TextField.focus = true
@@ -65,6 +68,7 @@ Page {
                 width: parent.width
                 TextField {
                     id: variable_TextField
+                    inputMethodHints: Qt.ImhNoAutoUppercase
                     width: parent.width*0.5
                     placeholderText: "x"
                     label: qsTr("Variable")
@@ -75,6 +79,7 @@ Page {
                 }
                 TextField {
                     id: point_TextField
+                    inputMethodHints: Qt.ImhNoAutoUppercase
                     width: parent.width*0.5
                     placeholderText: "0"
                     label: qsTr("Point")
@@ -101,6 +106,7 @@ Page {
                     id: calculate_Button
                     width: parent.width*0.35
                     text: qsTr("Calculate")
+                    focus: true
                     onClicked: limit_Column.calculateResultLimit()
                 }
             }
@@ -118,8 +124,7 @@ Page {
                 readOnly: true
                 font.family: dejavusansmono.name
                 font.pixelSize: Theme.fontSizeExtraSmall
-                placeholderText: "Limit calculation result"
-                text : '<FONT COLOR="LightGreen">Loading Python and SymPy, it takes some seconds...</FONT>'
+                text : '<FONT COLOR="LightGreen">All calculation results are copied to clipboard.<br>Loading Python and SymPy, it takes some seconds...</FONT>'
                 Component.onCompleted: {
                     _editor.textFormat = Text.RichText;
                 }
@@ -137,9 +142,9 @@ Page {
                     // Asynchronous module importing
                     importModule('limit', function() {
                         console.log('Python version: ' + evaluate('limit.versionPython'));
-                        result_TextArea.text='<FONT COLOR="LightGreen">Using Python version ' + evaluate('limit.versionPython') + '.</FONT>'
-                        console.log('SymPy version ' + evaluate('limit.versionSymPy') + evaluate('(" loaded in %f seconds." % limit.loadingtimeLimit)'));
-                        result_TextArea.text+='<FONT COLOR="LightGreen">SymPy version ' + evaluate('limit.versionSymPy') + evaluate('(" loaded in %f seconds." % limit.loadingtimeLimit)') + '</FONT><br>'
+                        result_TextArea.text+='<FONT COLOR="LightGreen">Using Python version ' + evaluate('limit.versionPython') + '.</FONT>'
+                        console.log('SymPy version ' + evaluate('limit.versionSymPy') + evaluate('(" loaded in %f seconds." % limit.loadingtimeSymPy)'));
+                        result_TextArea.text+='<FONT COLOR="LightGreen">SymPy version ' + evaluate('limit.versionSymPy') + evaluate('(" loaded in %f seconds." % limit.loadingtimeSymPy)') + '</FONT><br>'
                     });
                 }
 

@@ -1,0 +1,31 @@
+# Rename this file as Limit.changes to include changelog
+# entries in your RPM file.
+#
+# Add new changelog entries following the format below.
+# Add newest entries to the top of the list.
+# Separate entries from eachother with a blank line.
+
+# * date Author's Name <author's email> version-release
+# - Summary of changes
+
+* Tue Jun 17 2014 Roberto Colistete Jr. <roberto.colistete@gmail.com> - 0.8.0
+- Limit 0.8 (17/06/2014) for Sailfish :
+-  * disabled automatic upper case in virtual keyboard;
+-  * warning that all results are copied to clipboard;
+-  * "Help" shows that beta and gamma can't be used as variables;
+-  * "Settings" menu implemented with many options : numerical approximation,
+     simplification method, output type, show calculation time, etc;
+-  * portrait and landscape modes.
+
+* Sun May 18 2014 Roberto Colistete Jr. <roberto.colistete@gmail.com> - 0.7.1
+- Limit 0.7 (18/05/2014) for Sailfish :
+-  * "Error: limit not calculated" message is shown when there is a syntax, etc, error;
+-  * About and Help screens now have active web links;
+-  * calculation result is automatically copied to clipboard;
+-  * new icon.
+
+* Fri May 16 2014 Roberto Colistete Jr. <roberto.colistete@gmail.com> - 0.6.1
+- Limit v0.6 (16/05/2014) for Sailfish :
+-  * first public release for Sailfish.
+
+
