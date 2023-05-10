@@ -36,7 +36,7 @@ BuildRequires:  desktop-file-utils
 Limit - Calculation of mathematical limits using Python & SymPy module
 
 %if "%{?vendor}" == "chum"
-Title: Integral
+Title: Limit
 Type: desktop-application
 Categories:
  - Science
