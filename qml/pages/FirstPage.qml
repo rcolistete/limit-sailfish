@@ -12,8 +12,8 @@ Page {
     SilicaFlickable {
         id: container
         anchors.fill: parent
-        contentHeight: contentItem.childrenRect.height
-        contentWidth: page.width
+        //height: contentItem.childrenRect.height
+        width: page.width
 
         VerticalScrollDecorator { flickable: container }
 
@@ -32,6 +32,16 @@ Page {
                 onClicked: pageStack.push(Qt.resolvedUrl("SettingsPage.qml"))
             }
         }
+        PushUpMenu {
+            MenuItem {
+                text: qsTr("Copy result")
+                onClicked: Clipboard.text = result_TextArea.text
+            }
+            MenuItem {
+                text: qsTr("Copy formula")
+                onClicked: Clipboard.text = expression_TextField.text
+            }
+        }
 
         // Place our content in a Column.  The PageHeader is always placed at the top
         // of the page, followed by our content.
@@ -44,10 +54,12 @@ Page {
                 result_TextArea.text = '<FONT COLOR="LightGreen">Calculating limit...</FONT>'
                 py.call('limit.calculate_Limit', [expression_TextField.text,variable_TextField.text,point_TextField.text,direction_ComboBox.value,orientation!==Orientation.Landscape,showLimit,showTime,numerApprox,numDigText,simplifyResult_index,outputTypeResult_index], function(result) {
                     result_TextArea.text = result;
-                    result_TextArea.selectAll()
-                    result_TextArea.copy()
-                    result_TextArea.deselect()
                 })
+            }
+            function copyResult() {
+                result_TextArea.selectAll()
+                result_TextArea.copy()
+                result_TextArea.deselect()
             }
 
             PageHeader {
@@ -119,14 +131,26 @@ Page {
             FontLoader { id: dejavusansmono; source: "file:DejaVuSansMono.ttf" }
             TextArea {
                 id: result_TextArea
-                height: Math.max(page.width, 600, implicitHeight)
+                height: Math.max(page.width, 1080, implicitHeight)
                 width: parent.width
                 readOnly: true
                 font.family: dejavusansmono.name
-                font.pixelSize: Theme.fontSizeExtraSmall
-                text : '<FONT COLOR="LightGreen">All calculation results are copied to clipboard.<br>Loading Python and SymPy, it takes some seconds...</FONT>'
+                color: Theme.highlightColor
+                //font.pixelSize: Theme.fontSizeSmall
+                text : 'Loading Python and SymPy ...<br>'
                 Component.onCompleted: {
                     _editor.textFormat = Text.RichText;
+                }
+
+                /* for the cover we hold the value */
+                onTextChanged: { resultText = scaleText(text) }
+
+                /* for the cover we scale font px values */
+                function scaleText(text) {
+                    //console.log(text)
+                    const re0 = /48px/g;
+                    const newtxt = text.replace(re0, "22px")
+                    return newtxt
                 }
             }
 
@@ -142,7 +166,7 @@ Page {
                     // Asynchronous module importing
                     importModule('limit', function() {
                         console.log('Python version: ' + evaluate('limit.versionPython'));
-                        result_TextArea.text+='<FONT COLOR="LightGreen">Using Python version ' + evaluate('limit.versionPython') + '.</FONT>'
+                        result_TextArea.text+='<FONT COLOR="LightGreen">Python version ' + evaluate('limit.versionPython') + '.</FONT>'
                         console.log('SymPy version ' + evaluate('limit.versionSymPy') + evaluate('(" loaded in %f seconds." % limit.loadingtimeSymPy)'));
                         result_TextArea.text+='<FONT COLOR="LightGreen">SymPy version ' + evaluate('limit.versionSymPy') + evaluate('(" loaded in %f seconds." % limit.loadingtimeSymPy)') + '</FONT><br>'
                     });

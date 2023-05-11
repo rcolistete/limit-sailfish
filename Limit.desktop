@@ -3,5 +3,9 @@ Type=Application
 X-Nemo-Application-Type=silica-qt5
 Name=Limit
 Icon=Limit
-Exec=Limit
+Exec=/usr/bin/sailfish-qml Limit
 
+[X-Sailjail]
+Permissions=UserDirs
+OrganizationName=com.wordpress.robertocolistete
+ApplicationName=Limit

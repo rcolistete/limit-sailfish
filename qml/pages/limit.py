@@ -143,7 +143,7 @@ def calculate_Limit(expression,variable,point,direction,\
             resultOutput = python(resultLimitSimp)
 
     if showTime and (timeLimit > 0.0):
-        result = '<FONT COLOR="LightGreen">'+("Calculated after %f s :" % timeLimit)+'</FONT><br>'
+        result = '<FONT COLOR="LightGreen">'+("Calculated in %f s" % timeLimit)+'</FONT><br><br>'
     else:
         result = u""
     if showLimit and nonCalculatedLimitOutput:
