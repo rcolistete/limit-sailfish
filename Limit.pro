@@ -12,9 +12,7 @@
 # The name of your application
 TARGET = Limit
 
-CONFIG += sailfishapp
-
-SOURCES += src/Limit.cpp
+CONFIG += sailfishapp_qml
 
 OTHER_FILES += qml/Limit.qml \
     qml/cover/CoverPage.qml \

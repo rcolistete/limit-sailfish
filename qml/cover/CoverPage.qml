@@ -28,16 +28,44 @@
   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import QtQuick 2.0
+import QtQuick 2.2
 import Sailfish.Silica 1.0
+import "../pages"
 
 CoverBackground {
-    Label {
-        id: label
-        anchors.centerIn: parent
-        text: "Limit"
+    FontLoader { id: dejavusansmono; source: "../pages/DejaVuSansMono.ttf" }
+    TextArea {
+        id: cover_TextArea
+        anchors{
+            top:parent.top
+            left:parent.left
+        }
+        width: parent.width
+        readOnly: true
+        font.family: dejavusansmono.name
+        color: 'lightblue'//Theme.highlightColor
+        font.pixelSize: Theme.fontSizeSmall / 2
+        text : resultText
+        Component.onCompleted: {
+            _editor.textFormat = Text.RichText;
+        }
     }
+    Label {
+       id:timer
+        anchors{
+            top:cover_TextArea.bottom
+            margins: Theme.paddingLarge
+            horizontalCenter: parent.horizontalCenter
 
+        }
+
+       color: Theme.highlightColor
+       font.family: dejavusansmono.name
+       font.pixelSize: Theme.fontSizeExtraSmall
+       //width: implicitwidth  - Theme.paddingLarge
+       text: "Limit"
+    }
+    /*
     CoverActionList {
         id: coverAction
 
@@ -50,7 +78,7 @@ CoverBackground {
             iconSource: "image://theme/icon-cover-cancel"
             onTriggered: console.log("Stop")
         }
-    }
+    }*/
 }
 
 

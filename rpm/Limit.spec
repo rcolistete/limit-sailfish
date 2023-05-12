@@ -13,17 +13,17 @@ Name:       Limit
 %{!?qtc_make:%define qtc_make make}
 %{?qtc_builddir:%define _builddir %qtc_builddir}
 Summary:    Limit
-Version:    0.8
+Version:    0.9.2
 Release:    1
 Group:      Qt/Qt
 License:    LGPLv3
-URL:        http://www.robertocolistete.net/Limit/
+URL:        https://github.com/rcolistete/limit-sailfish
 Source0:    %{name}-%{version}.tar.bz2
-Source100:  Limit.yaml
+BuildArch:  noarch
+Requires:   libsailfishapp-launcher
 Requires:   sailfishsilica-qt5 >= 0.10.9
-Requires:   mapplauncherd-booster-silica-qt5
-Requires:   python3-base
 Requires:   pyotherside-qml-plugin-python3-qt5 >= 1.2
+Requires:   python3-base
 Requires:   python3-sympy
 BuildRequires:  pkgconfig(sailfishapp) >= 1.0.2
 BuildRequires:  pkgconfig(qdeclarative5-boostable)
@@ -34,6 +34,20 @@ BuildRequires:  desktop-file-utils
 
 %description
 Limit - Calculation of mathematical limits using Python & SymPy module
+
+%if "%{?vendor}" == "chum"
+Title: Limit
+Type: desktop-application
+Categories:
+ - Science
+ - Utility
+DeveloperName: Roberto Colistete
+PackagedBy: Mark Washeim (poetaster)
+Custom:
+ - Repo: https://github.com/rcolistete/limit-sailfish
+ - PackagingRepo: https://github.com/poetaster/limit-sailfish
+ PackageIcon: https://github.com/poetaster/limit-sailfish/blob/be123e3b17bc5141c352d888f4f354c9ef359229/Limit.png
+%endif
 
 
 %prep
@@ -68,7 +82,7 @@ desktop-file-install --delete-original       \
 
 %files
 %defattr(-,root,root,-)
-%{_bindir}
+%defattr(0644,root,root,-)
 %{_datadir}/%{name}
 %{_datadir}/applications/%{name}.desktop
 %{_datadir}/icons/hicolor/86x86/apps/%{name}.png

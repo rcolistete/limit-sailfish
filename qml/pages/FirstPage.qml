@@ -1,6 +1,5 @@
-import QtQuick 2.0
+import QtQuick 2.6
 import Sailfish.Silica 1.0
-import Sailfish.Silica.theme 1.0
 import io.thp.pyotherside 1.2
 
 Page {
@@ -12,8 +11,8 @@ Page {
     SilicaFlickable {
         id: container
         anchors.fill: parent
-        contentHeight: contentItem.childrenRect.height
-        contentWidth: page.width
+        //height: contentItem.childrenRect.height
+        width: page.width
 
         VerticalScrollDecorator { flickable: container }
 
@@ -32,6 +31,16 @@ Page {
                 onClicked: pageStack.push(Qt.resolvedUrl("SettingsPage.qml"))
             }
         }
+        PushUpMenu {
+            MenuItem {
+                text: qsTr("Copy result")
+                onClicked: Clipboard.text = result_TextArea.text
+            }
+            MenuItem {
+                text: qsTr("Copy formula")
+                onClicked: Clipboard.text = expression_TextField.text
+            }
+        }
 
         // Place our content in a Column.  The PageHeader is always placed at the top
         // of the page, followed by our content.
@@ -41,13 +50,15 @@ Page {
             spacing: Theme.paddingSmall
 
             function calculateResultLimit() {
-                result_TextArea.text = '<FONT COLOR="LightGreen">Calculating limit...</FONT>'
+                result_TextArea.text = 'Calculating limit...'
                 py.call('limit.calculate_Limit', [expression_TextField.text,variable_TextField.text,point_TextField.text,direction_ComboBox.value,orientation!==Orientation.Landscape,showLimit,showTime,numerApprox,numDigText,simplifyResult_index,outputTypeResult_index], function(result) {
                     result_TextArea.text = result;
-                    result_TextArea.selectAll()
-                    result_TextArea.copy()
-                    result_TextArea.deselect()
                 })
+            }
+            function copyResult() {
+                result_TextArea.selectAll()
+                result_TextArea.copy()
+                result_TextArea.deselect()
             }
 
             PageHeader {
@@ -117,16 +128,44 @@ Page {
                 color: Theme.primaryColor
             }
             FontLoader { id: dejavusansmono; source: "file:DejaVuSansMono.ttf" }
+
+            Label {
+               id:timer
+                anchors {
+                    left: limit_Separator.left
+                    topMargin: 2 * Theme.paddingLarge
+                    bottomMargin: 2 * Theme.paddingLarge
+                }
+               width: parent.width  - Theme.paddingLarge
+               text: timerInfo
+               color: Theme.highlightColor
+            }
+
             TextArea {
                 id: result_TextArea
-                height: Math.max(page.width, 600, implicitHeight)
+
+                height: implicitHeight + Theme.paddingLarge //Math.max(page.width, 1080, implicitHeight)
                 width: parent.width
                 readOnly: true
                 font.family: dejavusansmono.name
-                font.pixelSize: Theme.fontSizeExtraSmall
-                text : '<FONT COLOR="LightGreen">All calculation results are copied to clipboard.<br>Loading Python and SymPy, it takes some seconds...</FONT>'
+                color: 'lightblue'
+                font.pixelSize: Theme.fontSizeSmallBase
+                text : 'Loading Python and SymPy ...'
                 Component.onCompleted: {
-                    _editor.textFormat = Text.RichText;
+                    //_editor.textFormat = Text.RichText;
+                }
+
+                /* for the cover we hold the value */
+                onTextChanged: {
+                    console.log(implicitHeight)
+                    resultText = scaleText(text)
+                }
+                /* for the cover we scale font px values */
+                /* on the cover we can use html */
+                function scaleText(text) {
+                    const txt = '<FONT COLOR="lightblue" SIZE="16px"><pre>'
+                    txt = txt + text + '<pre></FONT>'
+                    return txt
                 }
             }
 
@@ -139,13 +178,21 @@ Page {
                     addImportPath(pythonpath);
                     console.log(pythonpath);
 
+                    setHandler('timerPush', timerPushHandler);
+
                     // Asynchronous module importing
                     importModule('limit', function() {
-                        console.log('Python version: ' + evaluate('limit.versionPython'));
-                        result_TextArea.text+='<FONT COLOR="LightGreen">Using Python version ' + evaluate('limit.versionPython') + '.</FONT>'
-                        console.log('SymPy version ' + evaluate('limit.versionSymPy') + evaluate('(" loaded in %f seconds." % limit.loadingtimeSymPy)'));
-                        result_TextArea.text+='<FONT COLOR="LightGreen">SymPy version ' + evaluate('limit.versionSymPy') + evaluate('(" loaded in %f seconds." % limit.loadingtimeSymPy)') + '</FONT><br>'
+                        //console.log('Python version: ' + evaluate('limit.versionPython'));
+                        //console.log('SymPy version ' + evaluate('limit.versionSymPy') + evaluate('(" loaded in %f seconds.\n" % limit.loadingtimeSymPy)'));
+                        result_TextArea.text='Python version ' + evaluate('limit.versionPython') + '.\n'
+                        result_TextArea.text+='SymPy version ' + evaluate('limit.versionSymPy') + '\n'
+                        timerInfo = evaluate('("loaded in %f seconds." % limit.loadingtimeSymPy)')
                     });
+                }
+
+                // shared via timerInfo with cover
+                function timerPushHandler(pTimer) {
+                    timerInfo = "Calculated in: " + pTimer
                 }
 
                 onError: {
