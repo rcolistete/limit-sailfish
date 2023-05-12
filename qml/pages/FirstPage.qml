@@ -1,6 +1,5 @@
-import QtQuick 2.0
+import QtQuick 2.6
 import Sailfish.Silica 1.0
-import Sailfish.Silica.theme 1.0
 import io.thp.pyotherside 1.2
 
 Page {
@@ -51,7 +50,7 @@ Page {
             spacing: Theme.paddingSmall
 
             function calculateResultLimit() {
-                result_TextArea.text = '<FONT COLOR="LightGreen">Calculating limit...</FONT>'
+                result_TextArea.text = 'Calculating limit...'
                 py.call('limit.calculate_Limit', [expression_TextField.text,variable_TextField.text,point_TextField.text,direction_ComboBox.value,orientation!==Orientation.Landscape,showLimit,showTime,numerApprox,numDigText,simplifyResult_index,outputTypeResult_index], function(result) {
                     result_TextArea.text = result;
                 })
@@ -129,28 +128,44 @@ Page {
                 color: Theme.primaryColor
             }
             FontLoader { id: dejavusansmono; source: "file:DejaVuSansMono.ttf" }
+
+            Label {
+               id:timer
+                anchors {
+                    left: limit_Separator.left
+                    topMargin: 2 * Theme.paddingLarge
+                    bottomMargin: 2 * Theme.paddingLarge
+                }
+               width: parent.width  - Theme.paddingLarge
+               text: timerInfo
+               color: Theme.highlightColor
+            }
+
             TextArea {
                 id: result_TextArea
-                height: Math.max(page.width, 1080, implicitHeight)
+
+                height: implicitHeight + Theme.paddingLarge //Math.max(page.width, 1080, implicitHeight)
                 width: parent.width
                 readOnly: true
                 font.family: dejavusansmono.name
-                color: Theme.highlightColor
-                //font.pixelSize: Theme.fontSizeSmall
-                text : 'Loading Python and SymPy ...<br>'
+                color: 'lightblue'
+                font.pixelSize: Theme.fontSizeSmallBase
+                text : 'Loading Python and SymPy ...'
                 Component.onCompleted: {
-                    _editor.textFormat = Text.RichText;
+                    //_editor.textFormat = Text.RichText;
                 }
 
                 /* for the cover we hold the value */
-                onTextChanged: { resultText = scaleText(text) }
-
+                onTextChanged: {
+                    console.log(implicitHeight)
+                    resultText = scaleText(text)
+                }
                 /* for the cover we scale font px values */
+                /* on the cover we can use html */
                 function scaleText(text) {
-                    //console.log(text)
-                    const re0 = /48px/g;
-                    const newtxt = text.replace(re0, "22px")
-                    return newtxt
+                    const txt = '<FONT COLOR="lightblue" SIZE="16px"><pre>'
+                    txt = txt + text + '<pre></FONT>'
+                    return txt
                 }
             }
 
@@ -163,13 +178,21 @@ Page {
                     addImportPath(pythonpath);
                     console.log(pythonpath);
 
+                    setHandler('timerPush', timerPushHandler);
+
                     // Asynchronous module importing
                     importModule('limit', function() {
-                        console.log('Python version: ' + evaluate('limit.versionPython'));
-                        result_TextArea.text+='<FONT COLOR="LightGreen">Python version ' + evaluate('limit.versionPython') + '.</FONT>'
-                        console.log('SymPy version ' + evaluate('limit.versionSymPy') + evaluate('(" loaded in %f seconds." % limit.loadingtimeSymPy)'));
-                        result_TextArea.text+='<FONT COLOR="LightGreen">SymPy version ' + evaluate('limit.versionSymPy') + evaluate('(" loaded in %f seconds." % limit.loadingtimeSymPy)') + '</FONT><br>'
+                        //console.log('Python version: ' + evaluate('limit.versionPython'));
+                        //console.log('SymPy version ' + evaluate('limit.versionSymPy') + evaluate('(" loaded in %f seconds.\n" % limit.loadingtimeSymPy)'));
+                        result_TextArea.text='Python version ' + evaluate('limit.versionPython') + '.\n'
+                        result_TextArea.text+='SymPy version ' + evaluate('limit.versionSymPy') + '\n'
+                        timerInfo = evaluate('("loaded in %f seconds." % limit.loadingtimeSymPy)')
                     });
+                }
+
+                // shared via timerInfo with cover
+                function timerPushHandler(pTimer) {
+                    timerInfo = "Calculated in: " + pTimer
                 }
 
                 onError: {

@@ -13,7 +13,7 @@ Name:       Limit
 %{!?qtc_make:%define qtc_make make}
 %{?qtc_builddir:%define _builddir %qtc_builddir}
 Summary:    Limit
-Version:    0.9.0
+Version:    0.9.2
 Release:    1
 Group:      Qt/Qt
 License:    LGPLv3

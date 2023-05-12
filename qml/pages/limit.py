@@ -51,9 +51,9 @@ def calculate_Limit(expression,variable,point,direction,\
     global nonCalculatedLimit, nonCalculatedLimitOutput, resultLimit, resultLimitSimp, resultOutput, timeLimit
 
     if flagPortrait:
-        init_printing(use_unicode=True, num_columns=35)
+        init_printing(use_unicode=True, num_columns=50)
     else:
-        init_printing(use_unicode=True, num_columns=60)
+        init_printing(use_unicode=True, num_columns=80)
     timet1=time.time()
 
     expressionLimit = expression
@@ -143,13 +143,15 @@ def calculate_Limit(expression,variable,point,direction,\
             resultOutput = python(resultLimitSimp)
 
     if showTime and (timeLimit > 0.0):
-        result = '<FONT COLOR="LightGreen">'+("Calculated in %f s" % timeLimit)+'</FONT><br><br>'
+        pyotherside.send("timerPush", ("%fs" % timeLimit))
+        result = u""
     else:
         result = u""
     if showLimit and nonCalculatedLimitOutput:
-        result += u'<FONT COLOR="LightBlue">'+(nonCalculatedLimitOutput.replace(' ','&nbsp;')).replace("\n","<br>")+'<br>=</FONT><br>'
+        result += nonCalculatedLimitOutput + '\n\n'
     if (type(resultLimitSimp) != str):
-        result += (resultOutput.replace(' ','&nbsp;')).replace("\n","<br>")
+        result += resultOutput
     else:
-        result += u'<FONT COLOR="Red">'+((resultOutput.replace(' ','&nbsp;')).replace("\n","<br>"))+'</FONT>'
+        #pyotherside.send("errorPush", resultOutput)
+        result += u''+resultOutput #.replace(' ','&nbsp;')).replace("\n","<br>"))
     return result

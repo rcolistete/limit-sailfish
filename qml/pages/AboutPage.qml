@@ -1,6 +1,5 @@
 import QtQuick 2.0
 import Sailfish.Silica 1.0
-import Sailfish.Silica.theme 1.0
 
 
 Page {
@@ -10,7 +9,7 @@ Page {
 
      Item {
         id: aboutInfos
-        property string version:'0.8'
+        property string version:'0.9.2'
         property string text: if(orientation === Orientation.Portrait) {
                                   '<style>a:link { color: ' + Theme.primaryColor  + '; }</style>' +
                                   'Limit calculates mathematical limits<br>symbolically and numerically.' +
@@ -19,7 +18,7 @@ Page {
                                   '<br>Free & Open Source :' +
                                   '<br><a href="http://www.gnu.org/licenses/lgpl-3.0.html"><b>License LGPLv3</b></a>' +
                                   '<br><br>For more information, see the web site :' +
-                                  '<br><a href="http://www.RobertoColistete.net/Limit"><b>www.RobertoColistete.net/Limit</b></a>' +
+                                  '<br><a href="https://github.com/rcolistete/limit-sailfish"><b>Limit</b></a>' +
                                   '<br><br><FONT COLOR="violet">In l&hearts;ving memory of my wife Lorena</FONT>'
                                } else {
                                   '<style>a:link { color: ' + Theme.primaryColor  + '; }</style>' +
@@ -29,7 +28,7 @@ Page {
                                   '<br>Free & Open Source :' +
                                   '<br><a href="http://www.gnu.org/licenses/lgpl-3.0.html"><b>License LGPLv3</b></a>' +
                                   '<br><br>For more information, see the web site :' +
-                                  '<br><a href="http://www.RobertoColistete.net/Limit"><b>www.RobertoColistete.net/Limit</b></a>' +
+                                  '<br><a href="https://github.com/rcolistete/limit-sailfish"><b>Limit</b></a>' +
                                   '<br><br><FONT COLOR="violet">In l&hearts;ving memory of my wife Lorena</FONT>'
                               }
     }
