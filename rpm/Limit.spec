@@ -13,7 +13,7 @@ Name:       Limit
 %{!?qtc_make:%define qtc_make make}
 %{?qtc_builddir:%define _builddir %qtc_builddir}
 Summary:    Limit
-Version:    0.9.2
+Version:    0.9.3
 Release:    1
 Group:      Qt/Qt
 License:    LGPLv3
@@ -25,6 +25,7 @@ Requires:   sailfishsilica-qt5 >= 0.10.9
 Requires:   pyotherside-qml-plugin-python3-qt5 >= 1.2
 Requires:   python3-base
 Requires:   python3-sympy
+BuildRequires:  qt5-qttools-linguist
 BuildRequires:  pkgconfig(sailfishapp) >= 1.0.2
 BuildRequires:  pkgconfig(qdeclarative5-boostable)
 BuildRequires:  pkgconfig(Qt5Core)
@@ -36,17 +37,17 @@ BuildRequires:  desktop-file-utils
 Limit - Calculation of mathematical limits using Python & SymPy module
 
 %if "%{?vendor}" == "chum"
-Title: Limit
+PackageName: Limit
 Type: desktop-application
 Categories:
  - Science
  - Utility
 DeveloperName: Roberto Colistete
-PackagedBy: Mark Washeim (poetaster)
+PackagerName: Mark Washeim (poetaster)
 Custom:
  - Repo: https://github.com/rcolistete/limit-sailfish
  - PackagingRepo: https://github.com/poetaster/limit-sailfish
- PackageIcon: https://github.com/poetaster/limit-sailfish/blob/be123e3b17bc5141c352d888f4f354c9ef359229/Limit.png
+Icon: https://github.com/poetaster/limit-sailfish/blob/be123e3b17bc5141c352d888f4f354c9ef359229/Limit.png
 %endif
 
 
