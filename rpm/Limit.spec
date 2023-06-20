@@ -6,6 +6,7 @@
 Name:       Limit
 
 # >> macros
+%define _binary_payload w2.xzdio
 # << macros
 
 %{!?qtc_qmake:%define qtc_qmake %qmake}
@@ -14,7 +15,7 @@ Name:       Limit
 %{?qtc_builddir:%define _builddir %qtc_builddir}
 Summary:    Limit
 Version:    0.9.3
-Release:    1
+Release:    2
 Group:      Qt/Qt
 License:    LGPLv3
 URL:        https://github.com/rcolistete/limit-sailfish
